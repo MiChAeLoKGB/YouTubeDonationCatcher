@@ -17,6 +17,8 @@ Catches donations on YouTube stream and shows them in separate chat that can be 
 - Minimum amount setting is 1 to 1, without any exchange rates (1$ = 1€ = 1£). That means, if you set it to 5$, it will ignore donations of 4£, which is actually more than 5$.
 - Disabling script will remove html from the page and also all events bound to it, which means, if you had any messages in it, they **will be removed**.
 - Chat can be either *pinned* on one specific spot on the page or float on the screen on same spot while scrolling (default).
+- Chat can be moved around the site by dragging on the title and resized by dragging its sides or bottom left corner.
+- Chats position, size and state (pinned/unpinned) are being saved (independently for dashboard and videos).
 
 
 ### Screenshot
