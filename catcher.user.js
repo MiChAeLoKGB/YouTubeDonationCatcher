@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YT donation catcher
 // @namespace    https://github.com/MiChAeLoKGB/YouTubeDonationCatcher
-// @version      1.10
+// @version      1.20
 // @description  Catches donations on YouTube stream and shows them in separate chat!
 // @author       MiChAeLoKGB
 // @match        https://www.youtube.com/live_dashboard
@@ -31,10 +31,13 @@
 	/**********************/
 
 	var identificator;
-
 	if (window.location.href == 'https://www.youtube.com/live_dashboard') identificator = 'dashboard';
 	else if (window.location.href.indexOf('https://www.youtube.com/watch') >= 0) identificator = 'watch';
 	else return;
+
+	var is_pinned = localStorage.getItem('YTDC_pinned_'+identificator),
+		position = localStorage.getItem('YTDC_position_'+identificator),
+		size = localStorage.getItem('YTDC_size_'+identificator);
 
 
 	/*****************/
@@ -44,7 +47,7 @@
 	var files = '<link href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css">\n'+
 		'<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css" rel="stylesheet" type="text/css">\n';
 
-	$("head").append(files);
+	$('head').append(files);
 
 
 	/***************/
@@ -70,7 +73,7 @@
 		'.delete_tip_message { float: right; cursor: pointer; margin-right: 5px; background: no-repeat url(//s.ytimg.com/yts/imgbin/www-hitchhiker-vflVAomqi.webp) 0px -432px; background-size: auto; width: 15px; height: 15px; }'+
 		'.ui-resizable-se { right: 0px; bottom: 0px; filter: invert(1); -webkit-filter: invert(1); }';
 
-	$("head").append("<style>"+css+"</style>");
+	$('head').append('<style>'+css+'</style>');
 
 
 	/*********************/
@@ -81,7 +84,7 @@
 		var html = '<div class="donation-widget enable">'+
 			'<div class="enable_widget">Enable</div>'+
 			'</div>';
-		$("#page-container #page").append(html);
+		$('#page-container #page').append(html);
 		$('.enable_widget').off('click').on('click', function(){ toggle_widget(); });
 	}
 
@@ -124,7 +127,7 @@
 		},
 		targetNode = document.body;
 
-	if ($("#all-comments").length) run_script(); // If comments are already loaded, skip the observer.
+	if ($('#all-comments').length) run_script(); // If comments are already loaded, skip the observer.
 	else observer.observe(targetNode, observerConfig); // Otherwise set up the observer and wait untill comments load
 
 
@@ -138,23 +141,44 @@
 		/*   Add HTML   */
 		/****************/
 
-		$(".donation-widget.enable").remove();
-		var html = '<div class="donation-widget">'+
+		$('.donation-widget.enable').remove();
+		var style_pos = (position !== null ? position : ""),
+			style_siz = (size !== null ? size : ""),
+			html = '<div class="donation-widget'+(is_pinned == "true" ? " pinned" : "")+'" style="'+style_pos+' '+style_siz+'">'+
 			'<div class="title">Donation messages <span class="pin_widget">Pin</span><span class="remove_widget">Disable</span></div>'+
 			'<div class="donation-messages"></div>'+
 			'</div>';
-		$("#page-container #page").append(html);
+		$('#page-container #page').append(html);
 
 
 		/**************************/
 		/*   Element definitons   */
 		/**************************/
 
-		var draggable_div = $(".donation-widget .title"),
-			widget = $(".donation-widget"),
-			message_box = $(".donation-messages"),
-			yt_comment_box = $("#all-comments"),
+		var draggable_div = $('.donation-widget .title'),
+			widget = $('.donation-widget'),
+			message_box = $('.donation-messages'),
+			yt_comment_box = $('#all-comments'),
 			last_comment_id;
+
+
+		/****************************/
+		/*   Pin/Unpin the widget   */
+		/****************************/
+
+		function toggle_pin(){
+			widget.toggleClass('pinned');
+			if (is_pinned == "true"){
+				localStorage.setItem('YTDC_pinned_'+identificator, 'false'); is_pinned = 'false';
+				// Fix the off-screen bug when un-pinning the widget
+				if (widget.css('top') != 'auto' && window.innerHeight - parseInt(widget.css('top').replace(/[^0-9\.]/gi, ''), 10) < draggable_div.height() + 10){
+					widget.css('top', (window.innerHeight - draggable_div.height() - 10)+'px'); // Change the possition for widget
+					localStorage.setItem('YTDC_position_'+identificator, 'top: '+(window.innerHeight - draggable_div.height() - 10)+'px; left: '+widget.css('left')+';'); // Set the correct position to storage.
+				}
+			}else{
+				localStorage.setItem('YTDC_pinned_'+identificator, 'true'); is_pinned = 'true';
+			}
+		}
 
 
 		/**************/
@@ -162,18 +186,19 @@
 		/**************/
 
 		$('.remove_widget').off('click').on('click', function(){ toggle_widget(); });
-		$('.pin_widget').off('click').on('click', function(){ widget.toggleClass('pinned'); });
+		$('.pin_widget').off('click').on('click', function(){ toggle_pin(); });
 		widget.resizable({
 			stop: function(event, ui) {
-				message_box.perfectScrollbar("update");
+				message_box.perfectScrollbar('update');
+				localStorage.setItem('YTDC_size_'+identificator, 'width: '+widget.css('width')+'; height: '+widget.css('height')+';');
 			}
 		});
 		message_box.perfectScrollbar();
 
 		// Events for elements added after load.
 		function changer() {
-			$(".delete_tip_message").off("click").on("click", function() {
-				$(this).closest(".message").remove();
+			$('.delete_tip_message').off('click').on('click', function() {
+				$(this).closest('.message').remove();
 			});
 		}
 
@@ -182,7 +207,7 @@
 		/*   Chat monitor   */
 		/********************/
 
-		yt_comment_box.bind("DOMSubtreeModified", function() {
+		yt_comment_box.bind('DOMSubtreeModified', function() {
 			var last_comment = $('#all-comments li.comment:last-child'),
 				last_comment_content = $('#all-comments li.comment:last-child .content');
 
@@ -201,16 +226,16 @@
 
 				// Add the message in, only if tip amount is equal or higher than minimum allowed.
 				if (tip_amount >= minimum_donation) {
-					var remove = "<span class='delete_tip_message'></span>",
-						append = "<div class='message'>" +
-						"<div class='message_info'>" +
-						"<span class='message_author'>" + author + "</span> | " +
-						"<span class='message_time'>" + time + "</span> | " +
-						"<span class='message_tip'>" + tip_text + "</span>" +
+					var remove = '<span class="delete_tip_message"></span>',
+						append = '<div class="message">' +
+						'<div class="message_info">' +
+						'<span class="message_author">' + author + '</span> | ' +
+						'<span class="message_time">' + time + '</span> | ' +
+						'<span class="message_tip">' + tip_text + '</span>' +
 						remove +
-						"</div>" +
-						"<div class='message_text'>" + message + "</div>" +
-						"</div>";
+						'</div>' +
+						'<div class="message_text">' + message + '</div>' +
+						'</div>';
 					message_box.append(append);
 					message_box.perfectScrollbar('update');
 					changer();
@@ -236,6 +261,7 @@
 					top: e.pageY - draggable_div.outerHeight() + relY,
 					left: e.pageX - draggable_div.outerWidth() + relX
 				}).on('mouseup', function() {
+					localStorage.setItem('YTDC_position_'+identificator, 'top: '+(e.pageY - draggable_div.outerHeight() + relY)+'px; left: '+(e.pageX - draggable_div.outerWidth() + relX)+'px;');
 					widget.removeClass('draggable');
 				});
 			});
@@ -252,9 +278,9 @@
 
 	function destroy_script(){
 
-		var widget = $(".donation-widget"),
-			message_box = $(".donation-messages"),
-			yt_comment_box = $("#all-comments");
+		var widget = $('.donation-widget'),
+			message_box = $('.donation-messages'),
+			yt_comment_box = $('#all-comments');
 
 
 		/**********************/
@@ -264,7 +290,7 @@
 		$('.remove_widget').off();
 		widget.resizable("destroy");
 		message_box.perfectScrollbar('destroy');
-		$(".delete_tip_message").off();
+		$('.delete_tip_message').off();
 		yt_comment_box.unbind();
 		widget.off();
 		widget.remove();
