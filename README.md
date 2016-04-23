@@ -19,6 +19,6 @@ Catches donations on YouTube stream and shows them in separate chat that can be 
 - Chat can be either *pinned* on one specific spot on the page or float on the screen on same spot while scrolling (default).
 
 
-### Screenshoot
+### Screenshot
 
-![Screenshoot](https://raw.githubusercontent.com/MiChAeLoKGB/YouTubeDonationCatcher/master/yt_donation_catcher.jpg "Screenshoot")
+![Screenshot](https://raw.githubusercontent.com/MiChAeLoKGB/YouTubeDonationCatcher/master/yt_donation_catcher.jpg "Screenshot")
