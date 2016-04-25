@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YT donation catcher
 // @namespace    https://github.com/MiChAeLoKGB/YouTubeDonationCatcher
-// @version      1.21
+// @version      1.22
 // @description  Catches donations on YouTube stream and shows them in separate chat!
 // @author       MiChAeLoKGB
 // @match        https://www.youtube.com/live_dashboard
@@ -218,6 +218,8 @@
 			if (last_comment.hasClass('fan-funding-tip')) {
 				// Get the data from last comment posted
 				var message = $.trim(last_comment_content.find('.comment-text').text()),
+					message_part1 = message.slice(0, message.length/2).trim(),
+					message_part2 = message.slice(message.length/2).trim(),
 					author = $.trim(last_comment_content.find('.author .yt-user-name').text()),
 					date = new Date(),
 					time = ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2),
@@ -226,6 +228,8 @@
 
 				// Add the message in, only if tip amount is equal or higher than minimum allowed.
 				if (tip_amount >= minimum_donation) {
+					// Check if message has been duplicated, if yes, remove duplicate part.
+					if (message_part1 == message_part2) message = message_part1;
 					var remove = '<span class="delete_tip_message"></span>',
 						append = '<div class="message">' +
 						'<div class="message_info">' +
