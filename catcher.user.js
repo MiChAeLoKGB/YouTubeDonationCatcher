@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YT donation catcher
 // @namespace    https://github.com/MiChAeLoKGB/YouTubeDonationCatcher
-// @version      1.20
+// @version      1.21
 // @description  Catches donations on YouTube stream and shows them in separate chat!
 // @author       MiChAeLoKGB
 // @match        https://www.youtube.com/live_dashboard
@@ -54,7 +54,7 @@
 	/*   Add CSS   */
 	/***************/
 
-	var css = '.donation-widget { width: 450px; height: 300px; background-color: #1b1b1b; border: 1px solid black; float: left; color: #ffffff; position: fixed; bottom: 5px; left: 0; z-index: 1000; }'+
+	var css = '.donation-widget { width: 450px; height: 300px; background-color: #1b1b1b; border: 1px solid black; float: left; color: #ffffff; position: fixed; bottom: 5px; left: 0; z-index: 1010; }'+
 		'.donation-widget.pinned { position: absolute; }'+
 		'.donation-widget.enable { width: auto; height: auto; padding: 5px; bottom: 0; }'+
 		'.enable_widget{ cursor: pointer; }'+
