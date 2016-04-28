@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YT donation catcher
 // @namespace    https://github.com/MiChAeLoKGB/YouTubeDonationCatcher
-// @version      1.22
+// @version      1.23
 // @description  Catches donations on YouTube stream and shows them in separate chat!
 // @author       MiChAeLoKGB
 // @match        https://www.youtube.com/live_dashboard
@@ -173,7 +173,7 @@
 				// Fix the off-screen bug when un-pinning the widget
 				if (widget.css('top') != 'auto' && window.innerHeight - parseInt(widget.css('top').replace(/[^0-9\.]/gi, ''), 10) < draggable_div.height() + 10){
 					widget.css('top', (window.innerHeight - draggable_div.height() - 10)+'px'); // Change the possition for widget
-					localStorage.setItem('YTDC_position_'+identificator, 'top: '+(window.innerHeight - draggable_div.height() - 10)+'px; left: '+widget.css('left')+';'); // Set the correct position to storage.
+					localStorage.setItem('YTDC_position_'+identificator, 'top: '+widget.css('top')+'; left: '+widget.css('left')+';'); // Set the correct position to storage.
 				}
 			}else{
 				localStorage.setItem('YTDC_pinned_'+identificator, 'true'); is_pinned = 'true';
@@ -265,7 +265,7 @@
 					top: e.pageY - draggable_div.outerHeight() + relY,
 					left: e.pageX - draggable_div.outerWidth() + relX
 				}).on('mouseup', function() {
-					localStorage.setItem('YTDC_position_'+identificator, 'top: '+(e.pageY - draggable_div.outerHeight() + relY)+'px; left: '+(e.pageX - draggable_div.outerWidth() + relX)+'px;');
+					localStorage.setItem('YTDC_position_'+identificator, 'top: '+widget.css('top')+'; left: '+widget.css('left')+';');
 					widget.removeClass('draggable');
 				});
 			});
