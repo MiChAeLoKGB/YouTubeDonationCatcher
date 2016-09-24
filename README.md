@@ -1,12 +1,13 @@
 # YouTube Donation Catcher
-Catches donations on YouTube stream and shows them in separate chat that can be moved around and resized! Messages can also be manualy removed.
+Reads the chat under any live stream on YouTube and pushes donations to separate chat widget, which can be moved around, resized and pinned to specific position or float on screen. Messages can also be manualy removed from the widget (ie.: after you read the donation and respond to it).
 
 
 ### Instalation
 
 1. Install [Tamper Monkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo) (Chrome) or [Grease Monkey](https://addons.mozilla.org/firefox/addon/greasemonkey/) (Firefox).
 2. Go to [this url](https://raw.githubusercontent.com/MiChAeLoKGB/YouTubeDonationCatcher/master/catcher.user.js) and install request should show up.
-3. Change **minimum_donation** value that will be captured by this script by changing the numeric value on line 25 (marked as **SETTINGS**) of this script from `var minimum_donation = 5,` to `var minimum_donation = 1,` or any number you want.
+3. Optional - Change **minimum_donation** value that will be captured by this script by changing the numeric value on line 25 (marked as **SETTINGS**) of this script from `var minimum_donation = 1,` to `var minimum_donation = 5,` or any number you want.
+4. Optional - Change **color scheme** from _light_ to _dark_ by changing the value on line 26 of this script from `scheme = 'light';` to `scheme = 'dark';`.
 
 
 ### Info
